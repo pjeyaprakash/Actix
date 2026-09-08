@@ -1,8 +1,10 @@
 mod config;
 mod utils;
 
+
 use actix_web::{web, App, HttpServer};
 use crate::config::{
+    migrations,
     db::create_pool,
     cors::configure_cors,
     env::ENV
@@ -13,6 +15,10 @@ use crate::config::{
 async fn main() -> std::io::Result<()> {
 
     let pool = create_pool();
+
+    migrations::run(&pool)
+        .await
+        .expect("Database Migration Failed");
 
     HttpServer::new( move || {
         App::new()
