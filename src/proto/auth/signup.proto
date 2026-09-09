@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package auth.signup;
+
+message SRequest {
+    int64 customer_id = 1;
+    int64 amount = 2;
+    string currency = 3;
+}
+
+message SResponse {
+    int64 customer_id = 1;
+    int64 amount = 2;
+    string currency = 3;
+}

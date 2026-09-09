@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package auth.login;
+
+message Request {
+    int64 customer_id = 1;
+    int64 amount = 2;
+    string currency = 3;
+}
+
+message Response {
+    int64 customer_id = 1;
+    int64 amount = 2;
+    string currency = 3;
+}

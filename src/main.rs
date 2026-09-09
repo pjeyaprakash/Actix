@@ -1,6 +1,6 @@
 mod config;
 mod utils;
-
+pub mod proto;
 
 use actix_web::{web, App, HttpServer};
 use crate::config::{
