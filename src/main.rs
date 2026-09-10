@@ -1,6 +1,8 @@
 mod config;
 mod utils;
+
 pub mod proto;
+pub mod modules;
 
 use actix_web::{web, App, HttpServer};
 use crate::config::{
@@ -9,12 +11,14 @@ use crate::config::{
     cors::configure_cors,
     env::ENV
 };
-// use crate::config::;
+use crate::modules::user::repo::UserRepo;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
 
     let pool = create_pool();
+
+    
 
     migrations::run(&pool)
         .await
