@@ -1,22 +1,42 @@
 use deadpool_postgres::Pool;
-use crate::proto::user::UserList;
+use futures_util::{pin_mut, TryStreamExt};
 
-// use crate::proto::
+use crate::proto::user::{User, UserList};
+
 pub struct UserRepo;
-use tokio_postgres::Row;
-impl UserRepo {
 
-    pub async fn get_user(pool:&Pool) -> Result<UserList, Box<dyn std::error::Error>>  {
+impl UserRepo {
+    pub async fn get_user(
+        pool: &Pool,
+    ) -> Result<UserList, Box<dyn std::error::Error>> {
         let db = pool.get().await?;
 
-        Ok(
-            db.query(
+        let stmt = db
+            .prepare_cached(
                 r#"
                 SELECT id, name
                 FROM users
                 "#,
-                &[]
-            ).await?
-        )
+            )
+            .await?;
+
+        let stream = db
+            .query_raw(
+                &stmt,
+                std::iter::empty::<&(dyn tokio_postgres::types::ToSql + Sync)>(),
+            )
+            .await?;
+
+        pin_mut!(stream);
+
+        let mut users = Vec::new();
+        while let Some(row) = stream.try_next().await? {
+            users.push(User {
+                id: row.get(0),
+                name: row.get(1),
+            });
+        }
+
+        Ok(UserList { data: users })
     }
 }
