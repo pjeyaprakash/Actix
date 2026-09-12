@@ -7,8 +7,8 @@ pub struct UserRepo;
 
 impl UserRepo {
     pub async fn get_user(
-        pool: &Pool,
-    ) -> Result<UserList, Box<dyn std::error::Error>> {
+        pool: &Pool
+    ) -> Result<Vec<User>, Box<dyn std::error::Error>> {
         let db = pool.get().await?;
 
         let stmt = db
@@ -37,6 +37,7 @@ impl UserRepo {
             });
         }
 
-        Ok(UserList { data: users })
+        // Ok(UserList { data: users })
+        Ok(users)
     }
 }
