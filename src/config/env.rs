@@ -1,8 +1,7 @@
 
 
 use std::sync::LazyLock;
-// use serde::Deserialize;
-// #[derive(Deserialize)]
+
 #[allow(non_snake_case)]
 pub struct Env {
     pub ENVIRONMENT: String,

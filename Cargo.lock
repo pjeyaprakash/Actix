@@ -258,6 +258,7 @@ version = "0.1.0"
 dependencies = [
  "actix-cors",
  "actix-web",
+ "bytes",
  "deadpool-postgres",
  "dotenvy",
  "futures-util",
@@ -266,6 +267,7 @@ dependencies = [
  "prost-build",
  "prost-types",
  "refinery",
+ "thiserror",
  "tokio-postgres",
 ]
 

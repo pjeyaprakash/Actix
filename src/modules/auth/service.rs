@@ -1,12 +1,19 @@
-// use deadpool_postgres::Pool;
-
+use crate::proto::auth::{LoginRequest, LoginResponse};
+use crate::utils::error::AppError;
 
 pub struct AuthService;
 
 impl AuthService {
 
-    // pub fn login() -> <String, sqlx::Error> {
-    //     "Login Successful"
-    // }
+    pub async fn login(data: LoginRequest) -> Result<LoginResponse, AppError> {
+            println!("{:?}", data);
+
+        Ok(
+            LoginResponse {
+                success: true,
+                message: "success".to_string()
+            }
+        )
+    }
 
 }

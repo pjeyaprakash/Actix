@@ -1,7 +1,11 @@
+use std::fmt::Debug;
 use actix_web::HttpResponse;
 use prost::Message;
 
-pub fn protobuf_response<T: Message>(message: T) -> HttpResponse {
+pub fn protobuf_response<T: Message + Debug>(message: T) -> HttpResponse {
+
+    println!("{:?}", message);
+    
     let mut buf = Vec::with_capacity(message.encoded_len());
 
     message

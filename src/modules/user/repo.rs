@@ -1,7 +1,7 @@
 use deadpool_postgres::Pool;
 use futures_util::{pin_mut, TryStreamExt};
 
-use crate::proto::user::{User, UserList};
+use crate::proto::user::{User};
 
 pub struct UserRepo;
 

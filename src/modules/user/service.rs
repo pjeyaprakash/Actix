@@ -1,6 +1,6 @@
 use deadpool_postgres::Pool;
 use crate::modules::user::repo::UserRepo;
-use crate::proto::user::{User, UserList};
+use crate::proto::user::{User};
 
 pub struct UserService;
 

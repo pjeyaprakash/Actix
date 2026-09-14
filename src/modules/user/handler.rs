@@ -1,10 +1,8 @@
 use actix_web::{web, HttpResponse};
 use deadpool_postgres::Pool;
 use crate::modules::user::service::UserService;
-use crate::proto::{
-    response::protobuf_response,
-    user::UserList
-};
+use crate::proto::user::UserList;
+use crate::utils::response::protobuf_response;
 
 pub struct UserHandler;
 //
