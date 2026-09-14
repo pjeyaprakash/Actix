@@ -16,6 +16,7 @@ impl UserRepo {
                 r#"
                 SELECT id, name
                 FROM users
+                LIMIT 100
                 "#,
             )
             .await?;
@@ -36,8 +37,6 @@ impl UserRepo {
                 name: row.get(1),
             });
         }
-
-        // Ok(UserList { data: users })
         Ok(users)
     }
 }

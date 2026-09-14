@@ -14,3 +14,7 @@
 
 # Down the Docker Compose
     -- docker compose down -v
+
+
+# To Generate SECRETS
+    -- openssl rand -base64 64

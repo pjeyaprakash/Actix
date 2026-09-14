@@ -17,7 +17,10 @@ pub struct Env {
     pub POSTGRES_PASSWORD: String,
 
     pub RUST_LOG: String,
-    pub TZ: String
+    pub TZ: String,
+    
+    pub JWT_ACCESS_SECRET: String,
+    pub JWT_REFRESH_SECRET: String,
 }
 
 impl Env {
@@ -38,7 +41,9 @@ impl Env {
             POSTGRES_USER: std::env::var("POSTGRES_USER").expect("POSTGRES_USER missing in .env"),
             POSTGRES_PASSWORD: std::env::var("POSTGRES_PASSWORD").expect("POSTGRES_PASSWORD missing in .env"),
             RUST_LOG: std::env::var("RUST_LOG").expect("RUST_LOG missing in .env"),
-            TZ: std::env::var("TZ").expect("TZ missing in .env")
+            TZ: std::env::var("TZ").expect("TZ missing in .env"),
+            JWT_ACCESS_SECRET: std::env::var("JWT_ACCESS_SECRET").expect("JWT_ACCESS_SECRET missing in .env"),
+            JWT_REFRESH_SECRET: std::env::var("JWT_REFRESH_SECRET").expect("JWT_REFRESH_SECRET missing in .env")
 
 
         }

@@ -17,6 +17,9 @@ pub enum AppError {
 
     #[error("Invalid request")]
     BadRequest,
+
+    #[error("Internal Server Error")]
+    InternalServerError
 }
 
 impl ResponseError for AppError {
@@ -28,6 +31,10 @@ impl ResponseError for AppError {
 
             Self::BadRequest => {
                 HttpResponse::BadRequest().finish()
+            }
+
+            Self::InternalServerError => {
+                HttpResponse::InternalServerError().finish()
             }
 
             Self::Database(_) |
