@@ -34,4 +34,19 @@ impl AuthRepo {
         Ok(None)
     }
 
+    pub async fn signup(pool: &Pool, email: String, password: String) -> Result<u64, AppError> {
+        let db = pool.get().await?;
+
+        let affected_row = db.execute_raw(
+            r#"
+            INSERT INTO login
+                (email, password)
+            VALUES($1, $2)
+            "#,
+            &vec![&email, &password]
+        ).await?;
+
+        Ok(affected_row)
+    }
+
 }
