@@ -1,13 +1,19 @@
-use std::ops::Index;
 use deadpool_postgres::Pool;
 use bcrypt;
+use jsonwebtoken::{encode, EncodingKey, Header};
+use uuid::{Uuid};
+use crate::config::env::ENV;
+use crate::modules::auth::model::{AccessClaims, RefreshClaims};
 use crate::modules::auth::repo::AuthRepo;
 use crate::proto::auth::{LoginRequest, LoginResponse, SignupRequest, SignupResponse};
+use crate::utils::constants::{JWT_ACCESS_TTL, JWT_REFRESH_TTL};
 use crate::utils::error::AppError;
 
 pub struct AuthService;
+pub struct JwtService;
 
 impl AuthService {
+
 
     pub async fn login(pool: &Pool ,data: LoginRequest) -> Result<LoginResponse, AppError> {
 
@@ -16,6 +22,8 @@ impl AuthService {
             let is_valid_password = bcrypt::verify(&data.password, &hashed_password)?;
 
             return if is_valid_password {
+                let access_token = JwtService::generate_access_token(12);
+                let refresh_token = JwtService::generate_refresh_token(2);
                 Ok(
                     LoginResponse {
                         success: true,
@@ -26,8 +34,8 @@ impl AuthService {
                 Err(AppError::Unauthorized("Invalid Password".to_string()))
             }
         }
-        
-        Err(AppError::NotFound)
+
+        Err(AppError::Unauthorized("Invalid Email".to_string()))
     }
 
 
@@ -47,5 +55,44 @@ impl AuthService {
             message: "Invalid Email".to_string()
         })
 
+    }
+}
+
+
+impl JwtService {
+    async fn generate_access_token(user_id: i32) -> Result<String, jsonwebtoken::errors::Error> {
+        let now = chrono::Utc::now().timestamp() as usize;
+
+        let claims = AccessClaims {
+            sub: user_id,
+            token_type: "access".to_string(),
+            iat: now,
+            exp: now + JWT_ACCESS_TTL,
+        };
+
+        encode(
+            &Header::default(),
+            &claims,
+            &EncodingKey::from_secret(ENV.JWT_ACCESS_SECRET.as_bytes()),
+        )
+    }
+
+
+    async fn generate_refresh_token(user_id: i32) -> Result<String, jsonwebtoken::errors::Error> {
+        let now = chrono::Utc::now().timestamp() as usize;
+
+        let claims = RefreshClaims {
+            sub: user_id,
+            token_type: "access".to_string(),
+            jti: Uuid::new_v4().to_string(),
+            iat: now,
+            exp: now + JWT_REFRESH_TTL,
+        };
+
+        encode(
+            &Header::default(),
+            &claims,
+            &EncodingKey::from_secret(ENV.JWT_REFRESH_SECRET.as_bytes()),
+        )
     }
 }

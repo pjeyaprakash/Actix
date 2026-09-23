@@ -1,8 +1,8 @@
-use actix_web::App;
 use deadpool_postgres::Pool;
 use crate::utils::error::AppError;
 use futures_util::{pin_mut, TryStreamExt};
 use std::iter::{once};
+use crate::modules::auth::model::LoginDetails;
 
 pub struct AuthRepo;
 
@@ -47,6 +47,36 @@ impl AuthRepo {
         ).await?;
 
         Ok(affected_row)
+    }
+
+    pub async fn get_login_details(pool: &Pool, email: String) -> Result<Option<LoginDetails>, AppError> {
+        let db = pool.get().await?;
+
+        let stmt = db.prepare_cached(
+            r#"
+            SELECT id
+            FROM login
+            WHERE email = $1
+            LIMIT 1;
+            "#
+        ).await?;
+
+        let stream = db.query_raw(
+            &stmt,
+            &vec![&email]
+        ).await?;
+
+        pin_mut!(stream);
+
+        if let Some(row) = stream.try_next().await? {
+            return Ok(Some(
+                LoginDetails {
+                id: row.get(0)
+            })
+            )
+        }
+
+        Ok(None)
     }
 
 }

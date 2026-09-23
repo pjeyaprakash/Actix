@@ -20,6 +20,7 @@ cookie = "0.18.2"
 chrono = "0.4.45"
 jsonwebtoken = "11.0.0"
 serde = { version = "1.0.229", features = ["derive"] }
+uuid = { version = "1.26.1", features = ["v4"] }
 
 
 
