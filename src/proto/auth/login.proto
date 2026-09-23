@@ -8,7 +8,15 @@ message LoginRequest {
 
 }
 
+
+message LoginDetails {
+    int32 id = 1;
+    string access_token = 2;
+    string refresh_token = 3;
+}
+
 message LoginResponse {
     bool success = 1;
     string message = 2;
+    LoginDetails data = 3;
 }

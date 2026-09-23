@@ -17,8 +17,8 @@ pub struct RefreshClaims {
 }
 
 
-pub struct LoginDetails {
-    pub id: i32
-}
+// pub struct LoginDetails {
+//     pub id: i32
+// }
 
 

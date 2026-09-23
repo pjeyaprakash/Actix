@@ -2,6 +2,7 @@ mod config;
 mod utils;
 pub mod proto;
 pub mod modules;
+pub mod middleware;
 
 use actix_web::{web, App, HttpServer};
 use crate::config::{
@@ -10,7 +11,7 @@ use crate::config::{
     cors::configure_cors,
     env::ENV
 };
-use crate::modules::routes::routes;
+use crate::modules::routes::{open_routes, protected_routes};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -25,7 +26,8 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(configure_cors())
             .app_data(web::Data::new(pool.clone()))
-            .configure(routes)
+            .configure(open_routes)
+            .configure(protected_routes)
     })
         .bind(("0.0.0.0", ENV.APP_PORT))?
         .run()

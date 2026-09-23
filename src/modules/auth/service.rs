@@ -22,14 +22,29 @@ impl AuthService {
             let is_valid_password = bcrypt::verify(&data.password, &hashed_password)?;
 
             return if is_valid_password {
-                let access_token = JwtService::generate_access_token(12);
-                let refresh_token = JwtService::generate_refresh_token(2);
-                Ok(
-                    LoginResponse {
-                        success: true,
-                        message: "Login Successful".to_string()
-                    }
-                )
+
+                if let Some(mut login_details) = AuthRepo::get_login_details(&pool, &data.email).await? {
+                    let access_token = JwtService::generate_access_token(login_details.id).await?;
+                    let refresh_token = JwtService::generate_refresh_token(login_details.id).await?;
+
+                    login_details.access_token = access_token.to_string();
+                    login_details.refresh_token = refresh_token.to_string();
+
+                    Ok(
+                        LoginResponse {
+                            success: true,
+                            message: "Login Successful".to_string(),
+                            data: login_details.into()
+                        }
+                    )
+                } else {
+                    Err(AppError::Unauthorized("Invalid Password".to_string()))
+                }
+
+
+
+
+
             } else {
                 Err(AppError::Unauthorized("Invalid Password".to_string()))
             }

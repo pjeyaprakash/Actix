@@ -2,7 +2,8 @@ use deadpool_postgres::Pool;
 use crate::utils::error::AppError;
 use futures_util::{pin_mut, TryStreamExt};
 use std::iter::{once};
-use crate::modules::auth::model::LoginDetails;
+use crate::proto::auth::LoginDetails;
+// use crate::modules::auth::model::LoginDetails;
 
 pub struct AuthRepo;
 
@@ -49,7 +50,7 @@ impl AuthRepo {
         Ok(affected_row)
     }
 
-    pub async fn get_login_details(pool: &Pool, email: String) -> Result<Option<LoginDetails>, AppError> {
+    pub async fn get_login_details(pool: &Pool, email: &String) -> Result<Option<LoginDetails>, AppError> {
         let db = pool.get().await?;
 
         let stmt = db.prepare_cached(
@@ -71,9 +72,12 @@ impl AuthRepo {
         if let Some(row) = stream.try_next().await? {
             return Ok(Some(
                 LoginDetails {
-                id: row.get(0)
-            })
-            )
+                    id: row.get(0), 
+                    access_token: "".to_string(), 
+                    refresh_token: "".to_string()
+                    
+                }
+            ))
         }
 
         Ok(None)
