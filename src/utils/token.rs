@@ -5,7 +5,7 @@ use serde::Serialize;
 use crate::config::env::ENV;
 use crate::utils::error::AppError;
 
-#[derive(Serialize)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Claims {
     pub sub: String,
     pub exp: usize,

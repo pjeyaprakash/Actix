@@ -21,6 +21,8 @@ pub struct Env {
     
     pub JWT_ACCESS_SECRET: String,
     pub JWT_REFRESH_SECRET: String,
+
+    pub REDIS_URL: String
 }
 
 impl Env {
@@ -43,7 +45,9 @@ impl Env {
             RUST_LOG: std::env::var("RUST_LOG").expect("RUST_LOG missing in .env"),
             TZ: std::env::var("TZ").expect("TZ missing in .env"),
             JWT_ACCESS_SECRET: std::env::var("JWT_ACCESS_SECRET").expect("JWT_ACCESS_SECRET missing in .env"),
-            JWT_REFRESH_SECRET: std::env::var("JWT_REFRESH_SECRET").expect("JWT_REFRESH_SECRET missing in .env")
+            JWT_REFRESH_SECRET: std::env::var("JWT_REFRESH_SECRET").expect("JWT_REFRESH_SECRET missing in .env"),
+            REDIS_URL: std::env::var("REDIS_URL").expect("REDIS_URL missing in .env")
+
 
 
         }

@@ -1,16 +1,16 @@
 use std::rc::Rc;
 use actix_web::dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform};
-use actix_web::Error;
+use actix_web::{Error, HttpMessage};
 use futures_util::future::{ready, LocalBoxFuture, Ready};
 use crate::utils::error::AppError;
 use jsonwebtoken::{decode, DecodingKey, Validation};
 use crate::config::env::ENV;
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct Claims {
-    pub sub: String,
-    pub exp: usize,
-}
+use crate::utils::token::Claims;
+// #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+// pub struct Claims {
+//     pub sub: String,
+//     pub exp: usize,
+// }
 
 pub struct AuthMiddleware;
 
@@ -21,8 +21,8 @@ where
 {
     type Response = ServiceResponse<B>;
     type Error = Error;
-    type InitError = ();
     type Transform = AuthMiddlewareService<S>;
+    type InitError = ();
     type Future = Ready<Result<Self::Transform, Self::InitError>>;
 
 
@@ -59,12 +59,14 @@ where
                 .ok_or_else( || AppError::Unauthorized("Missing Access Token".into()))?;
 
             let claims = decode::<Claims>(
-                &token,
-                &DecodingKey::from_secret(ENV.JWT_ACCESS_SECRET.as_bytes()),
-                &Validation::default()
-            )
+                    &token,
+                    &DecodingKey::from_secret(ENV.JWT_ACCESS_SECRET.as_bytes()),
+                    &Validation::default()
+                )
                 .map_err(|_| AppError::Unauthorized("Expired Token".into()))?
                 .claims;
+
+            req.extensions_mut().insert(claims);
 
             service.call(req).await
         })

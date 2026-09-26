@@ -5,6 +5,7 @@ use actix_web::{
 };
 use bcrypt::BcryptError;
 use prost::{DecodeError, Message};
+use redis::RedisError;
 use crate::proto::api::ErrorResponse;
 
 #[derive(Debug, thiserror::Error)]
@@ -41,6 +42,9 @@ pub enum AppError {
 
     #[error("JWT error: {0}")]
     Jwt(#[from] jsonwebtoken::errors::Error),
+
+    #[error("Redis error: {0}")]
+    Redis(#[from] RedisError),
 }
 
 impl ResponseError for AppError {
@@ -57,6 +61,7 @@ impl ResponseError for AppError {
             Self::Postgres(_) |
             Self::Bcrypt(_) |
             Self::Jwt(_) |
+            Self::Redis(_) |
             Self::InternalServerError => {
                 StatusCode::INTERNAL_SERVER_ERROR
             }
@@ -98,6 +103,7 @@ impl ResponseError for AppError {
             Self::Postgres(_) |
             Self::Bcrypt(_) |
             Self::Jwt(_) |
+            Self::Redis(_) |
             Self::InternalServerError => {
                 ("INTERNAL_SERVER_ERROR", "Internal Server Error")
             }
