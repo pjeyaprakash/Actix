@@ -15,7 +15,7 @@ impl AuthRepo {
         let stmt = db.prepare_cached(
             r#"
             SELECT password
-            FROM login
+            FROM users
             WHERE email = $1
             LIMIT 1;
             "#
@@ -40,7 +40,7 @@ impl AuthRepo {
 
         let affected_row = db.execute_raw(
             r#"
-            INSERT INTO login
+            INSERT INTO users
                 (email, password)
             VALUES($1, $2)
             "#,
@@ -56,7 +56,7 @@ impl AuthRepo {
         let stmt = db.prepare_cached(
             r#"
             SELECT id
-            FROM login
+            FROM users
             WHERE email = $1
             LIMIT 1;
             "#

@@ -14,7 +14,7 @@ impl UserRepo {
         let stmt = db
             .prepare_cached(
                 r#"
-                SELECT id, name
+                SELECT id, email
                 FROM users
                 LIMIT 100
                 "#,
@@ -34,7 +34,7 @@ impl UserRepo {
         while let Some(row) = stream.try_next().await? {
             users.push(User {
                 id: row.get(0),
-                name: row.get(1),
+                email: row.get(1),
             });
         }
         Ok(users)
